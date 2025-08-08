@@ -1,0 +1,15 @@
+# requirements.txt
+# This file is for dependencies that are not available via Conda or for specific versions required by pip.
+# It complements environment.yml, which is the primary way to manage dependencies in this template.
+
+# Dependencies that cannot be handled by Conda or require specific pip versions:
+# langserve[server]>=0.2.2,<0.3.0
+
+# Development tools (also in environment.yml for conda users)
+# It's good practice to have them here for pip-based workflows or if you prefer managing them with pip.
+
+ipykernel
+python-dotenv
+pydantic
+pytest
+pymongo
