@@ -1,7 +1,7 @@
 .PHONY: install dev test clean
 SHELL = /bin/zsh
 CONDA_ACTIVATE = source $$(conda info --base)/etc/profile.d/conda.sh ; conda activate ; conda activate
-ENV_NAME = template-python-mongodb-service
+ENV_NAME = ai-agent-with-mongodb
 
 install:
 	conda env create -f environment.yml --name $(ENV_NAME) || true && \

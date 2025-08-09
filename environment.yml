@@ -1,4 +1,4 @@
-name: template-python-mongodb-service
+name: ai-agent-with-mongodb
 channels:
   - defaults
   - conda-forge

@@ -1,4 +1,4 @@
-# MongoDB Service Template - Python
+# AI Agent with MongoDB
 
 A Python MongoDB service template
 The connection string for the docker cluster is:
