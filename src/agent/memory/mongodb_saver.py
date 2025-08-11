@@ -1,14 +1,15 @@
-from persistence.mongodb import get_client
 from langgraph.checkpoint.mongodb import MongoDBSaver
 from langgraph.store.mongodb import MongoDBStore
 
+from src.persistence.mongodb import get_client
+
 
 def get_mongodb_saver(collection_name: str, db_name: str):
-    MongoDBSaver(
+    return MongoDBSaver(
         client=get_client().client,
-        checkpointCollectionName=collection_name,
+        checkpoint_collection_name=collection_name,
         db_name=db_name,
-    ),
+    )
 
 
 def get_mongodb_store(collection_name: str, db_name: str):
