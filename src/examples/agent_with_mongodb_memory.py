@@ -1,4 +1,3 @@
-import os
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langgraph.prebuilt import create_react_agent
@@ -7,11 +6,13 @@ from openai import BaseModel
 from langgraph.prebuilt.chat_agent_executor import AgentState
 from langchain_core.messages import AnyMessage
 from langgraph.runtime import get_runtime
+from pydantic import ConfigDict
 
 from src.agent.model import ContextSchema
 from src.agent.tools.address_tools import get_address
 from src.agent.tools.weather_tools import get_weather
 from src.config import OPENAI_API_KEY, OPENAI_MODEL_NAME
+from src.agent.memory.mongodb_saver import get_mongodb_saver, get_mongodb_store
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,6 +27,9 @@ def prompt(state: AgentState) -> list[AnyMessage]:
 
 
 class AgentResponse(BaseModel):
+    # ensure strict compliance with the schema
+    model_config = ConfigDict(extra="forbid")
+
     weather_conditions: str
     temperature: float
     address: str
@@ -33,17 +37,18 @@ class AgentResponse(BaseModel):
 
 agent = create_react_agent(
     model=init_chat_model(
-        model=OPENAI_MODEL_NAME,
-        api_key=OPENAI_API_KEY,
-        temperature=0.0,
-        # max_tokens=1000,
+        model=OPENAI_MODEL_NAME, api_key=OPENAI_API_KEY, temperature=0.0
     ),
     # the AI model will be queried to choose which tool to use based on the user's request
     tools=[get_weather, get_address],
     prompt=prompt,
     context_schema=ContextSchema,
     # the agent will save its state in memory
-    checkpointer=InMemorySaver(),
+    checkpointer=get_mongodb_saver(
+        collection_name="agent_checkpoints", db_name="playground"
+    ),
+    # requires MongoDB Atlas Vector Search or Atlas CLI
+    store=get_mongodb_store(collection_name="agent_store", db_name="playground"),
     # Structured output requires an additional call to the LLM to format the response according to the schema.
     response_format=AgentResponse,
 )

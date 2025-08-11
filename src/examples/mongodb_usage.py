@@ -13,7 +13,7 @@ from datetime import datetime
 # Add the src directory to the path so we can import our modules
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from persistence.mongodb import MongoDBClient, get_client
+from src.persistence.mongodb import MongoDBClient, get_client
 from bson import ObjectId
 
 

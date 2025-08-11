@@ -11,7 +11,7 @@ The connection string for the docker cluster is:
 
 ## Prerequisites
 
-- Python
+- Python 3.13.\*
 - Docker and Docker Compose
 - Make (optional, for using Makefile commands)
 

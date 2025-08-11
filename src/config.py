@@ -8,7 +8,7 @@ load_dotenv()
 # MongoDB Configuration
 MONGODB_URI = os.getenv(
     "MONGODB_URI",
-    "mongodb://mongodb1:27017,mongodb2:27018,mongodb3:27019/?replicaSet=rs0",
+    "mongodb://admin:admin@localhost:27027/?directConnection=true",
 )
 
 MONGODB_DATABASE = os.getenv("MONGODB_DATABASE", "app_database")
@@ -28,4 +28,4 @@ MONGODB_RETRY_READS = os.getenv("MONGODB_RETRY_READS", "true").lower() == "true"
 
 # OpenAI Configuration
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME", "gpt-5")
+OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME", "openai:gpt-5-mini")

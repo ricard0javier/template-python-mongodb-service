@@ -16,3 +16,4 @@ pymongo
 langgraph
 langchain[openai]
 langgraph-checkpoint-mongodb
+langgraph-store-mongodb

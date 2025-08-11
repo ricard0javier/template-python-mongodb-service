@@ -1,13 +1,6 @@
-# MongoDB Replica Set Configuration
-
-# x-mongo-version: &mongo_version mongo:6.0.22
-x-mongo-version: &mongo_version mongo:8.0.9
-
 # Define persistent volumes for each MongoDB instance
 volumes:
-  mongodb1_data:
-  mongodb2_data:
-  mongodb3_data:
+  mongodb_atlas_data:
 
 # Create a dedicated network for MongoDB communication
 networks:
@@ -15,148 +8,6 @@ networks:
     driver: bridge
 
 services:
-  # Primary MongoDB instance
-  mongodb1:
-    container_name: mongodb1
-    # set the hostname to migrate-mongodb1.ricardovz.com
-    image: *mongo_version
-    hostname: mongodb1
-    command: mongod --replSet rs0 --bind_ip_all --port 27017 # Enable replica set mode and allow external connections
-    ports:
-      - "27017:27017" # Expose MongoDB default port
-    volumes:
-      - mongodb1_data:/data/db # Persistent storage for MongoDB data
-    networks:
-      - mongodb_network
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "mongosh",
-          "mongodb://mongodb1:27017",
-          "--eval",
-          "db.serverStatus()",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
-  # Secondary MongoDB instance
-  mongodb2:
-    container_name: mongodb2
-    image: *mongo_version
-    hostname: mongodb2
-    command: mongod --replSet rs0 --bind_ip_all --port 27018
-    ports:
-      - "27018:27018" # Different port to avoid conflicts
-    volumes:
-      - mongodb2_data:/data/db
-    networks:
-      - mongodb_network
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "mongosh",
-          "mongodb://mongodb2:27018",
-          "--eval",
-          "db.serverStatus()",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
-  # Secondary MongoDB instance
-  mongodb3:
-    container_name: mongodb3
-    image: *mongo_version
-    hostname: mongodb3
-    command: mongod --replSet rs0 --bind_ip_all --port 27019
-    ports:
-      - "27019:27019" # Different port to avoid conflicts
-    volumes:
-      - mongodb3_data:/data/db
-    networks:
-      - mongodb_network
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "mongosh",
-          "mongodb://mongodb3:27019",
-          "--eval",
-          "db.serverStatus()",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
-  # Initialization service that configures the replica set
-  mongodb-init:
-    container_name: mongodb-init
-    image: *mongo_version
-    depends_on:
-      mongodb1:
-        condition: service_healthy
-      mongodb2:
-        condition: service_healthy
-      mongodb3:
-        condition: service_healthy
-    command: >
-      bash -c "
-        until mongosh --host mongodb1:27017 --eval 'db.serverStatus()' > /dev/null 2>&1; do
-          echo 'Waiting for MongoDB to be ready...'
-          sleep 2
-        done && \
-        mongosh --host mongodb1:27017 --eval '
-          rs.initiate({
-            _id: \"rs0\",
-            members: [
-              { _id: 0, host: \"mongodb1:27017\" },
-              { _id: 1, host: \"mongodb2:27018\" },
-              { _id: 2, host: \"mongodb3:27019\" }
-            ]
-          })
-        ' && \
-        until mongosh "mongodb://mongodb1:27017,mongodb2:27018,mongodb3:27019/admin?replicaSet=rs0" --eval 'rs.status().ok' | grep -q 1; do
-          echo 'Waiting for replica set to initialize...'
-          sleep 2
-        done && \
-        echo 'MongoDB replica set initialized'
-      "
-    volumes:
-      - ./scripts:/scripts
-    networks:
-      - mongodb_network
-
-  mongodb-health:
-    image: *mongo_version
-    depends_on:
-      - mongodb-init
-      - mongodb1
-      - mongodb2
-      - mongodb3
-    command: >
-      bash -c "
-        while true; do
-          /scripts/validate-cluster-healthcheck.sh
-          if [ $? -eq 0 ]; then
-            echo 'MongoDB cluster is healthy'
-          else
-            echo 'MongoDB cluster health check failed'
-          fi
-          sleep 30
-        done
-      "
-    volumes:
-      - ./scripts:/scripts
-    networks:
-      - mongodb_network
-    restart: unless-stopped
-
   app:
     build:
       context: .
@@ -165,6 +16,19 @@ services:
     networks:
       - mongodb_network
     environment:
-      - MONGODB_URI=mongodb://mongodb1:27017,mongodb2:27018,mongodb3:27019/?replicaSet=rs0
+      - MONGODB_URI=mongodb://admin:admin@localhost:27027/?directConnection=true
     depends_on:
-      - mongodb-init
+      - mongodb_atlas
+
+  mongodb_atlas:
+    image: mongodb/mongodb-atlas-local:8.0.5-20250808T111358Z
+    restart: unless-stopped
+    volumes:
+      - mongodb_atlas_data:/data/db
+    networks:
+      - mongodb_network
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=admin
+      - MONGODB_INITDB_ROOT_PASSWORD=admin
+    ports:
+      - "27027:27017"
