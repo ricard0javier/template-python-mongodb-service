@@ -28,4 +28,4 @@ MONGODB_RETRY_READS = os.getenv("MONGODB_RETRY_READS", "true").lower() == "true"
 
 # OpenAI Configuration
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME", "openai:gpt-5-mini")
+OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME", "openai:gpt-5-chat-latest")

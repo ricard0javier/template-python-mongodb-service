@@ -12,7 +12,7 @@ install:
 dev:
 	docker-compose up -d mongodb_atlas
 	$(CONDA_ACTIVATE) $(ENV_NAME) && \
-	$$(conda info --envs | grep $(ENV_NAME) | awk '{print $$NF}')/bin/python src/main.py
+	$$(conda info --envs | grep $(ENV_NAME) | awk '{print $$NF}')/bin/python -m src.main
 
 test:
 	$(CONDA_ACTIVATE) $(ENV_NAME) && \
