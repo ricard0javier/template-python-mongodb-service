@@ -3,4 +3,6 @@ from dataclasses import dataclass
 
 @dataclass
 class ContextSchema:
-    user_name: str
+    sender_name: str
+    sender_type: str
+    receiver_name: str
