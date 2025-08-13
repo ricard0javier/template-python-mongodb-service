@@ -4,14 +4,14 @@ from src.examples.agent_with_mongodb_memory import invoke_agent
 def get_result(sender_name: str, user_message: str, receiver_name: str):
     print(f"👤 {sender_name}: {user_message}")
 
-    # get user type
-    if sender_name == "Ricardo":
-        sender_type = "owner"
-    else:
-        sender_type = "contact"
-
     # invoke agent
-    result = invoke_agent("070", sender_type, sender_name, receiver_name, user_message)
+    result = invoke_agent(
+        thread_id="070",
+        sender_type=sender_name == "Ricardo" and "owner" or "contact",
+        sender_name=sender_name,
+        receiver_name=receiver_name,
+        user_message=user_message,
+    )
     if result is None:
         return
 
