@@ -1,0 +1,104 @@
+{
+  "sample_message_received": {
+    "_id": "68a311911b1dbaa23ae9adf1",
+    "eventType": "whatsup.message.received",
+    "metadata": {
+      "schema_version": "1",
+      "source": "whatsup-service",
+      "traceId": "7230ce81-86e5-46e0-a790-c1b476280c72",
+      "correlationId": "0693dbeb-e7b2-47ef-a5f6-125939283563",
+      "causationId": "04089f64-0fc6-4c78-8310-58862cd38228",
+      "occurredAt": "2025-01-18T12:34:56Z"
+    },
+    "aggregate": {
+      "type": "Conversation",
+      "id": "447700900123@c.us",
+      "subType": "MessageReceived",
+      "sequenceNr": "1"
+    },
+    "payload": {
+      "chatId": "447700900123@c.us",
+      "from": "+447700900123",
+      "to": "+447911900123",
+      "text": "Can we talk at 5?",
+      "isFromSelf": false
+    }
+  },
+  "sample_message_generated": {
+    "_id": "68a311911b1dbaa23ae9adf4",
+    "eventType": "whatsup.message.generated",
+    "metadata": {
+      "schema_version": "1",
+      "source": "whatsup-assistant",
+      "traceId": "7230ce81-86e5-46e0-a790-c1b476280c72",
+      "correlationId": "0693dbeb-e7b2-47ef-a5f6-125939283563",
+      "causationId": "68a311911b1dbaa23ae9adf1",
+      "occurredAt": "2025-01-18T12:34:57Z"
+    },
+    "aggregate": {
+      "type": "Conversation",
+      "id": "447700900123@c.us",
+      "subType": "MessageGenerated",
+      "sequenceNr": "2"
+    },
+    "payload": {
+      "chatId": "447700900123@c.us",
+      "from": "+447911900123",
+      "to": "+447700900123",
+      "text": "I'm busy today, but I'll call you later",
+      "isFromSelf": true
+    }
+  },
+  "sample_message_ignored": {
+    "_id": "68a311911b1dbaa23ae9adf5",
+    "eventType": "whatsup.message.generated",
+    "metadata": {
+      "schema_version": "1",
+      "source": "whatsup-assistant",
+      "traceId": "7230ce81-86e5-46e0-a790-c1b476280c72",
+      "correlationId": "0693dbeb-e7b2-47ef-a5f6-125939283563",
+      "causationId": "68a311911b1dbaa23ae9adf1",
+      "occurredAt": "2025-01-18T12:34:58Z"
+    },
+    "aggregate": {
+      "type": "Conversation",
+      "id": "447700900123@c.us",
+      "subType": "MessageIgnored",
+      "sequenceNr": "3"
+    },
+    "payload": {
+      "chatId": "447700900123@c.us",
+      "from": "+447911900123",
+      "to": "+447700900123",
+      "text": "",
+      "isFromSelf": true
+    }
+  },
+  "sample_dlq_event": {
+    "_id": "68a311911b1dbaa23ae9adf6",
+    "eventType": "whatsup.message.received",
+    "metadata": {
+      "schema_version": "1",
+      "source": "whatsup-assistant",
+      "traceId": "7230ce81-86e5-46e0-a790-c1b476280c72",
+      "correlationId": "0693dbeb-e7b2-47ef-a5f6-125939283563",
+      "causationId": "68a311911b1dbaa23ae9adf1",
+      "occurredAt": "2025-01-18T12:34:59Z",
+      "errorType": "System Error",
+      "error": "LLM cannot be reached due to network timeout"
+    },
+    "aggregate": {
+      "type": "Conversation",
+      "id": "447700900123@c.us",
+      "subType": "MessageReceived",
+      "sequenceNr": "1"
+    },
+    "payload": {
+      "chatId": "447700900123@c.us",
+      "from": "+447700900123",
+      "to": "+447911900123",
+      "text": "Can we talk at 5?",
+      "isFromSelf": false
+    }
+  }
+}

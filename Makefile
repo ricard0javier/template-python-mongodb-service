@@ -10,7 +10,7 @@ install:
 	pip install -r requirements.txt
 
 dev:
-	docker-compose up -d mongodb_atlas
+	docker-compose up -d mongodb_atlas redpanda-console
 	$(CONDA_ACTIVATE) $(ENV_NAME) && \
 	$$(conda info --envs | grep $(ENV_NAME) | awk '{print $$NF}')/bin/python -m src.main
 

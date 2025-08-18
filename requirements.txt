@@ -13,6 +13,8 @@ python-dotenv
 pydantic
 pytest
 pymongo
+kafka-python
+python-snappy
 langgraph
 langchain[openai]
 langgraph-checkpoint-mongodb
